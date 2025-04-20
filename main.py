@@ -267,4 +267,5 @@ print(classification_report(y_true, y_pred, target_names=class_names))
 #           SAVE FINAL MODEL
 # ========================================
 
-model.save('model.h5')
+from tensorflow.keras.models import load_model
+model.save("model.keras", save_format="keras_v3")

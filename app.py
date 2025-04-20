@@ -9,7 +9,9 @@ import io
 app = FastAPI()
 
 # Load the trained model
-model = load_model("model.h5")
+with keras.saving.custom_object_scope({'BatchNormalization': keras.layers.BatchNormalization}):
+    model = load_model("model.keras")
+
 
 # Set image size expected by the model
 IMG_SIZE = (180, 180)
