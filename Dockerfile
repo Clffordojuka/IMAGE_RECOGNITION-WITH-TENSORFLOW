@@ -16,5 +16,8 @@ COPY . .
 # Set environment variable to avoid Python buffering issues
 ENV PYTHONUNBUFFERED=1
 
-# Run your script
-CMD ["python", "main.py"]
+# Expose FastAPI default port
+EXPOSE 8000
+
+# Run the FastAPI app
+CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000"]

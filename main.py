@@ -267,4 +267,4 @@ print(classification_report(y_true, y_pred, target_names=class_names))
 #           SAVE FINAL MODEL
 # ========================================
 
-model.save('fine_tuned_flower_model.h5')
+model.save('model.h5')
