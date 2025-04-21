@@ -16,6 +16,7 @@ import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import BatchNormalization
 from sklearn.metrics import classification_report
 
 
@@ -118,20 +119,36 @@ plt.show()
 #           BASELINE MODEL
 # ========================================
 
-num_classes = len(class_names)
+class PatchedBatchNorm(BatchNormalization):
+    def __init__(self, axis=-1, **kwargs):
+        if isinstance(axis, list):  
+            axis = axis[0]
+        super().__init__(axis=axis, **kwargs)
 
-model = Sequential([
-    layers.Rescaling(1./255, input_shape=(180, 180, 3)),
-    layers.Conv2D(16, 3, padding='same', activation='relu'),
-    layers.MaxPooling2D(),
-    layers.Conv2D(32, 3, padding='same', activation='relu'),
-    layers.MaxPooling2D(),
-    layers.Conv2D(64, 3, padding='same', activation='relu'),
-    layers.MaxPooling2D(),
-    layers.Flatten(),
-    layers.Dense(128, activation='relu'),
-    layers.Dense(num_classes)
-])
+def create_model(num_classes):
+  model = Sequential([
+      layers.Rescaling(1./255, input_shape=(180, 180, 3)), 
+
+      layers.Conv2D(16, 3, padding='same', activation='relu'),  
+      BatchNormalization(axis=3), 
+      layers.MaxPooling2D(),  
+
+      layers.Conv2D(32, 3, padding='same', activation='relu'),
+      BatchNormalization(axis=3), 
+      layers.MaxPooling2D(),
+
+      layers.Conv2D(64, 3, padding='same', activation='relu'), 
+      BatchNormalization(axis=3), 
+      layers.MaxPooling2D(),
+
+      layers.Flatten(), 
+      layers.Dense(128, activation='relu'),  
+      layers.Dense(num_classes)  
+  ])
+  return model
+
+num_classes = len(class_names)
+model = create_model(num_classes)
 
 model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
@@ -267,5 +284,5 @@ print(classification_report(y_true, y_pred, target_names=class_names))
 #           SAVE FINAL MODEL
 # ========================================
 
-from tensorflow.keras.models import load_model
-model.save("model.keras", save_format="keras_v3")
+# Save the entire model in .h5 format.
+model.save("model.h5")
