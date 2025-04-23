@@ -1,0 +1,6 @@
+__pycache__/
+.git/
+*.ipynb
+*.h5
+*.csv
+*.log

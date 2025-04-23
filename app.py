@@ -17,7 +17,8 @@ class PatchedBatchNorm(BatchNormalization):
     def __init__(self, axis=-1, **kwargs):
         if isinstance(axis, list):  # Convert lists to integers
             axis = axis[0]
-        super().__init__(axis=int(axis), **kwargs)
+        kwargs['axis'] = int(axis)
+        super().__init__(**kwargs)
 
     def get_config(self):
         config = super().get_config()
