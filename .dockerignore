@@ -12,4 +12,3 @@ venv/
 .gitignore
 .idea/
 .vscode/
-*.h5
