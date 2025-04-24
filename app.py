@@ -2,14 +2,25 @@ from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import JSONResponse
 from tensorflow.keras.preprocessing import image
 from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import BatchNormalization
 import numpy as np
 from PIL import Image
 import io
 
 app = FastAPI()
 
+#Define a custom Batchnorm class.
+class CustomBatchNorm(BatchNormalization):
+    @classmethod
+    def from_config(cls, config):
+        axis = config.get('axis')
+        if isinstance(axis, list):
+            axis = axis[0]  # Take the first element if it's a list
+        config['axis'] = int(axis)  # Convert to integer
+        return super().from_config(config)
+
 # Load the trained MobileNetV2 model
-model = load_model("mobilenetv2.h5")
+model = load_model("mobilenetv2.h5", custom_objects={'BatchNormalization': CustomBatchNorm})
 
 # Define class names as per training
 CLASS_NAMES = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
