@@ -16,7 +16,7 @@ It supports:
 
 ## 🧠 Model Overview
 
-The model is a Convolutional Neural Network (CNN) built with TensorFlow/Keras.
+The model is a Convolutional Neural Network (CNN) built with TensorFlow/Keras. It includes **BatchNormalization**, pooling, and fully connected layers.
 
 It is trained and saved using:
 
